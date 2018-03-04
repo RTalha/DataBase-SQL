@@ -1,0 +1,77 @@
+CREATE TABLE Customer
+( CustNo          VARCHAR(8)   NOT NULL ,
+  CustName        VARCHAR(30)  NOT NULL ,
+  Address         VARCHAR(30)  NOT NULL ,
+  Internal        CHAR(1)       NOT NULL ,
+  Contact         VARCHAR(30)  NOT NULL ,
+  Phone           CHAR(15)      NOT NULL , 
+  City            VARCHAR(20)  NOT NULL , 
+  State           CHAR(2)       NOT NULL ,
+  Zip             CHAR(10)      NOT NULL , 
+
+  CONSTRAINT PK_CUSTOMER PRIMARY KEY (CustNo)
+
+ );
+
+
+CREATE TABLE Employee
+( EmpNo          VARCHAR(8)     NOT NULL,
+  EmpName        VARCHAR(30)    NOT NULL,
+  Department     VARCHAR(30)    NOT NULL,
+  Email          VARCHAR(30)    NOT NULL,
+  Phone          CHAR(15)       NOT NULL, 
+
+  CONSTRAINT PK_EMPLOYEE PRIMARY KEY (EmpNo)
+
+ );
+
+CREATE TABLE Facility
+( FacNo           VARCHAR(8)  ,
+  FacName         VARCHAR(30) ,
+
+  CONSTRAINT PK_FACILITY PRIMARY KEY (FacNo)
+
+ );
+
+CREATE TABLE Location
+( LocNo           VARCHAR(8)       NOT NULL,
+  FacNo           VARCHAR(8)       NOT NULL,
+  LocName         VARCHAR(30)      NOT NULL,
+
+  CONSTRAINT PK_LOCATION PRIMARY KEY (LocNo),
+
+  CONSTRAINT FK_LOCATION_FACILITY FOREIGN KEY (FacNo) REFERENCES Facility (FacNo)
+ );
+
+
+CREATE TABLE ResourceTbl
+( ResNo           VARCHAR(8)            NOT NULL,
+  ResName         VARCHAR(30)           NOT NULL,
+  Rate            DECIMAL(5,2)          NOT NULL,
+
+  CONSTRAINT PK_RESOURCE_TBL PRIMARY KEY (ResNo),
+
+  CONSTRAINT RESOURCE_RATE_POS CHECK (Rate > 0)
+ );
+
+CREATE TABLE EventRequest
+( EventNo         VARCHAR(8)         NOT NULL,
+  DateHeld        DATE               NOT NULL,
+  DateReq         DATE               NOT NULL,
+  FacNo           VARCHAR(8)         NOT NULL,
+  CustNo          VARCHAR(8)         NOT NULL,
+  DateAuth        DATE        ,
+  Status          CHAR(10)           NOT NULL,
+  EstCost         DECIMAL(10,2)      NOT NULL, 
+  EstAudience     DECIMAL(10)        NOT NULL, 
+  BudNo           VARCHAR(8) ,
+
+  CONSTRAINT PK_EVENT_REQUEST  PRIMARY KEY (EventNo),
+
+  CONSTRAINT FK_EVENT_REQUEST_CUSTOMER       FOREIGN KEY (CustNo) REFERENCES Customer (CustNo),
+  CONSTRAINT FK_EVENT_REQUEST_FACILITY       FOREIGN KEY (FacNo) REFERENCES Facility (FacNo),
+
+  CONSTRAINT EVENT_REQUEST_STATUS CHECK (Status IN ('Approved', 'Pending', 'Denied')),
+  CONSTRAINT EVENT_REQUEST_AUDIENCE_POS CHECK (EstAudience > 0)
+
+ );
